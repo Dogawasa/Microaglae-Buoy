@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microalgae Buoy Dashboard | GitHub Pages</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">AI-Controlled Prototype Demo</p>
+        <h1>Modular Floating Microalgae Biofilter</h1>
+        <p class="lede">
+          Static frontend for GitHub Pages. ESP32 sensors and the AI backend run separately,
+          while this page reads live module data from your deployed API.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-link" href="#dashboard">Open Dashboard</a>
+          <a class="secondary-link" href="#setup">Setup Guide</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="./assets/model_3d_isometric.svg" alt="3D concept model">
+      </div>
+    </section>
+
+    <section class="backend-card" id="setup">
+      <div>
+        <p class="eyebrow">Backend Connection</p>
+        <h2>Set Your AI Server URL</h2>
+        <p>
+          Put your Flask backend URL here. Example:
+          <code>https://your-backend.example.com</code>
+          or <code>http://192.168.1.103:5000</code>
+        </p>
+      </div>
+      <form id="backend-form" class="backend-form">
+        <label for="backend-url">Backend URL</label>
+        <div class="backend-row">
+          <input id="backend-url" type="url" placeholder="https://your-backend.example.com">
+          <button type="submit">Save</button>
+        </div>
+        <small id="backend-status">No backend saved yet.</small>
+      </form>
+    </section>
+
+    <section class="concept-grid">
+      <article class="concept-card">
+        <h3>System Architecture</h3>
+        <ul>
+          <li>Upper sealed algae cartridge for safe microalgae growth</li>
+          <li>Lower water treatment chamber with intake, filter media, and outlet flow</li>
+          <li>ESP32 sensor cluster sends live values to the AI backend</li>
+          <li>AI chooses <code>TREAT</code>, <code>FLUSH</code>, <code>HOLD</code>, or <code>LOCKOUT</code></li>
+        </ul>
+      </article>
+      <article class="concept-card">
+        <h3>Prototype Build</h3>
+        <ul>
+          <li>Floating frame or pontoons</li>
+          <li>Clear upper algae chamber</li>
+          <li>Lower treatment box with tubing and pump</li>
+          <li>Waterproof electronics box with battery and relay</li>
+        </ul>
+      </article>
+      <article class="concept-card">
+        <h3>Recommended Extra Hardware</h3>
+        <ul>
+          <li>Waterproof enclosure and cable glands</li>
+          <li>Fuse and 12V to 5V buck converter</li>
+          <li>Intake mesh and algae-retaining membrane</li>
+          <li>Leak sensor, ballast, and manual switch</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="model-section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Concept Models</p>
+          <h2>2D and 3D project visuals</h2>
+        </div>
+      </div>
+      <div class="model-grid">
+        <figure class="model-card">
+          <img src="./assets/model_2d.svg" alt="2D microalgae buoy model">
+          <figcaption>2D prototype layout</figcaption>
+        </figure>
+        <figure class="model-card">
+          <img src="./assets/model_3d_isometric.svg" alt="3D microalgae buoy model">
+          <figcaption>3D concept overview</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="dashboard-panel" id="dashboard">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Live Monitoring</p>
+          <h2>GitHub Pages Dashboard</h2>
+        </div>
+        <span class="pill" id="connection-pill">Disconnected</span>
+      </div>
+
+      <div class="control-bar">
+        <button data-sim="clear">Good</button>
+        <button data-sim="treat">Treat</button>
+        <button data-sim="dark">Dark</button>
+        <button data-sim="clog">Clog</button>
+        <button data-sim="ph_bad">pH</button>
+        <button data-sim="maintenance">Service</button>
+        <button id="manual-lock">Toggle Lock</button>
+      </div>
+
+      <div class="summary-grid">
+        <article class="summary-card"><span>Modules online</span><strong id="module-count">0</strong></article>
+        <article class="summary-card"><span>Average DO</span><strong id="avg-do">--</strong></article>
+        <article class="summary-card"><span>Active treatment</span><strong id="active-count">0</strong></article>
+        <article class="summary-card"><span>Alerts</span><strong id="alert-count">0</strong></article>
+      </div>
+
+      <div class="module-list" id="module-list">
+        <div class="empty-state">Save a backend URL to load module data.</div>
+      </div>
+    </section>
+
+    <section class="guide-grid">
+      <article class="guide-card">
+        <h3>How to use this site</h3>
+        <ol>
+          <li>Deploy the Flask backend somewhere public or on your local network.</li>
+          <li>Paste the backend base URL above and click Save.</li>
+          <li>Open this GitHub Pages site from any browser.</li>
+          <li>Use simulation buttons or connect a real ESP32 module.</li>
+        </ol>
+      </article>
+      <article class="guide-card">
+        <h3>API routes used by this frontend</h3>
+        <ul>
+          <li><code>GET /data</code></li>
+          <li><code>POST /simulate</code></li>
+          <li><code>POST /manual_lock</code></li>
+          <li><code>POST /capture-image</code> (optional, backend feature)</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
