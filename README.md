@@ -30,7 +30,8 @@ The project does **not** automatically release live microalgae into natural wate
 
 ## Project files
 
-- `modular_ai_server.py` - Flask AI server and dashboard
+- `backend_api_server.py` - clean Flask backend API for the GitHub Pages frontend
+- `modular_ai_server.py` - all-in-one local Flask AI server and dashboard
 - `start_modular_ai_server.bat` - quick launcher for Windows
 - `microsketch_/microsketch_.ino` - ESP32 / Arduino code
 - `docs/index.html` - GitHub Pages frontend dashboard
@@ -84,6 +85,12 @@ The frontend will call:
 - `GET /data`
 - `POST /simulate`
 - `POST /manual_lock`
+
+Recommended backend for GitHub Pages deployment:
+
+```powershell
+python backend_api_server.py
+```
 
 ### Option 2: Local Flask dashboard
 
