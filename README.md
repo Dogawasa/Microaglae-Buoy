@@ -20,8 +20,8 @@ The project does **not** automatically release live microalgae into natural wate
 
 - ESP32 sensor reporting
 - AI-based decision logic for treatment flow and safety
-- GitHub Pages frontend dashboard
-- Separate Flask backend for AI + API
+- Thai-language web dashboard
+- Manual test buttons for classroom/demo use
 - Adaptive reporting:
   - sensor reads every 10 seconds
   - normal report every 60 seconds
@@ -30,7 +30,7 @@ The project does **not** automatically release live microalgae into natural wate
 
 ## Project files
 
-- `modular_ai_server.py` - Flask AI server and dashboard backend
+- `modular_ai_server.py` - Flask AI server and dashboard
 - `start_modular_ai_server.bat` - quick launcher for Windows
 - `microsketch_/microsketch_.ino` - ESP32 / Arduino code
 - `docs/index.html` - GitHub Pages frontend dashboard
@@ -130,7 +130,7 @@ Then wait for GitHub Pages to publish the site.
 Open:
 
 ```text
-microsketch_/microsketch_.ino
+microsketch_\microsketch_.ino
 ```
 
 Update these values:
