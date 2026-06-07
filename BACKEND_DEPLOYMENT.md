@@ -17,7 +17,7 @@ Run on your computer:
 
 ```powershell
 pip install -r requirements.txt
-python modular_ai_server.py
+python backend_api_server.py
 ```
 
 Then use your computer IP as the backend URL in GitHub Pages:
