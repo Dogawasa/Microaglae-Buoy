@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef8ea"/>
+      <stop offset="100%" stop-color="#d3efc7"/>
+    </linearGradient>
+    <linearGradient id="algae" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b8f08a"/>
+      <stop offset="100%" stop-color="#58aa46"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#87d8d1"/>
+      <stop offset="100%" stop-color="#4fb0bd"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #143b1f; }
+      .label { font: 700 24px Arial, sans-serif; fill: #1d4d2a; }
+      .text { font: 500 20px Arial, sans-serif; fill: #245432; }
+      .small { font: 500 18px Arial, sans-serif; fill: #2d5c3a; }
+      .box { fill: rgba(255,255,255,0.55); stroke: #6bb36c; stroke-width: 3; rx: 18; }
+      .arrow { stroke: #287c4e; stroke-width: 5; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#287c4e"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <text x="700" y="70" text-anchor="middle" class="title">2D Modular Microalgae Buoy Concept</text>
+
+  <rect x="390" y="150" width="620" height="560" rx="38" fill="#f7fff1" stroke="#4f9c53" stroke-width="6"/>
+  <line x1="390" y1="360" x2="1010" y2="360" stroke="#4f9c53" stroke-width="5" stroke-dasharray="14 10"/>
+
+  <rect x="450" y="185" width="500" height="130" rx="28" fill="url(#algae)" opacity="0.8" stroke="#3c8740" stroke-width="4"/>
+  <text x="700" y="235" text-anchor="middle" class="label">Upper Closed Algae Chamber</text>
+  <text x="700" y="270" text-anchor="middle" class="text">Sunlight supports photosynthesis and oxygen production</text>
+  <text x="700" y="300" text-anchor="middle" class="small">Closed system keeps microalgae contained</text>
+
+  <rect x="450" y="405" width="500" height="250" rx="28" fill="url(#water)" opacity="0.7" stroke="#2c7a8a" stroke-width="4"/>
+  <text x="700" y="455" text-anchor="middle" class="label">Lower Water Treatment Chamber</text>
+  <text x="700" y="490" text-anchor="middle" class="text">Water flows through oxygen exchange and biofilm surfaces</text>
+  <text x="700" y="522" text-anchor="middle" class="small">AI controls flow, aeration, lockout, and alerts</text>
+
+  <rect x="110" y="210" width="220" height="88" class="box"/>
+  <text x="220" y="245" text-anchor="middle" class="label">Sunlight</text>
+  <text x="220" y="275" text-anchor="middle" class="small">Natural energy input</text>
+  <path d="M330 254 L430 254" class="arrow"/>
+
+  <rect x="1080" y="214" width="220" height="90" class="box"/>
+  <text x="1190" y="248" text-anchor="middle" class="label">Algae Growth</text>
+  <text x="1190" y="278" text-anchor="middle" class="small">Biofilm / microalgae culture</text>
+  <path d="M950 250 L1080 250" class="arrow"/>
+
+  <rect x="85" y="450" width="250" height="100" class="box"/>
+  <text x="210" y="488" text-anchor="middle" class="label">River Water Inlet</text>
+  <text x="210" y="520" text-anchor="middle" class="small">Water enters buoy module</text>
+  <path d="M335 500 L448 500" class="arrow"/>
+
+  <rect x="1080" y="448" width="250" height="104" class="box"/>
+  <text x="1205" y="486" text-anchor="middle" class="label">Cleaner Water Outlet</text>
+  <text x="1205" y="518" text-anchor="middle" class="small">Higher DO, improved quality</text>
+  <path d="M950 500 L1080 500" class="arrow"/>
+
+  <rect x="115" y="630" width="250" height="130" class="box"/>
+  <text x="240" y="668" text-anchor="middle" class="label">Sensors</text>
+  <text x="240" y="700" text-anchor="middle" class="small">DO, pH, turbidity, light,</text>
+  <text x="240" y="728" text-anchor="middle" class="small">temperature, film density</text>
+  <path d="M365 694 L448 622" class="arrow"/>
+
+  <rect x="1030" y="620" width="280" height="145" class="box"/>
+  <text x="1170" y="660" text-anchor="middle" class="label">AI + ESP32 Control</text>
+  <text x="1170" y="692" text-anchor="middle" class="small">Analyze water conditions</text>
+  <text x="1170" y="720" text-anchor="middle" class="small">Adjust flow / aeration / alerts</text>
+  <text x="1170" y="748" text-anchor="middle" class="small">Protect system with lockout</text>
+  <path d="M950 620 L1030 694" class="arrow"/>
+
+  <text x="700" y="785" text-anchor="middle" class="text">Multiple buoy modules can connect in sequence to treat larger water areas.</text>
+</svg>
