@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#edf8ff"/>
+      <stop offset="100%" stop-color="#d9f1d2"/>
+    </linearGradient>
+    <linearGradient id="topAlgae" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#baf78d"/>
+      <stop offset="100%" stop-color="#4d9d45"/>
+    </linearGradient>
+    <linearGradient id="sideBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#bcece8"/>
+      <stop offset="100%" stop-color="#5cb8bf"/>
+    </linearGradient>
+    <linearGradient id="deepWater" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#89dde1"/>
+      <stop offset="100%" stop-color="#2c8594"/>
+    </linearGradient>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #143b1f; }
+      .label { font: 700 24px Arial, sans-serif; fill: #164929; }
+      .text { font: 500 20px Arial, sans-serif; fill: #245432; }
+      .small { font: 500 18px Arial, sans-serif; fill: #2f6041; }
+      .callout { fill: rgba(255,255,255,0.66); stroke: #72b46b; stroke-width: 3; rx: 18; }
+      .arrow { stroke: #2d7d56; stroke-width: 4; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#2d7d56"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#sky)"/>
+  <text x="700" y="70" text-anchor="middle" class="title">3D Isometric Modular Buoy Model</text>
+
+  <ellipse cx="700" cy="700" rx="470" ry="100" fill="#97dfe0" opacity="0.75"/>
+
+  <polygon points="500,265 765,205 955,320 690,382" fill="url(#topAlgae)" stroke="#3d8a41" stroke-width="4"/>
+  <polygon points="690,382 955,320 955,560 690,625" fill="#8dd6d5" stroke="#35838d" stroke-width="4"/>
+  <polygon points="500,265 690,382 690,625 500,510" fill="url(#sideBody)" stroke="#35838d" stroke-width="4"/>
+  <polygon points="545,365 785,312 895,378 655,436" fill="#d4fff0" opacity="0.7" stroke="#69b6b5" stroke-width="3"/>
+  <polygon points="555,446 730,408 880,492 700,538" fill="url(#deepWater)" opacity="0.88" stroke="#2e7b8a" stroke-width="3"/>
+
+  <rect x="600" y="295" width="150" height="54" rx="16" fill="#eefbe2" stroke="#58a552" stroke-width="3"/>
+  <text x="675" y="330" text-anchor="middle" class="small">Solar zone</text>
+
+  <rect x="615" y="470" width="178" height="60" rx="16" fill="#eefdfc" stroke="#4f9da6" stroke-width="3"/>
+  <text x="704" y="506" text-anchor="middle" class="small">Treatment flow</text>
+
+  <rect x="165" y="180" width="280" height="112" class="callout"/>
+  <text x="305" y="218" text-anchor="middle" class="label">Closed Algae Chamber</text>
+  <text x="305" y="250" text-anchor="middle" class="small">Upper module stores microalgae</text>
+  <text x="305" y="278" text-anchor="middle" class="small">for controlled photosynthesis</text>
+  <path d="M445 236 L540 270" class="arrow"/>
+
+  <rect x="955" y="190" width="300" height="112" class="callout"/>
+  <text x="1105" y="228" text-anchor="middle" class="label">Transparent Top Surface</text>
+  <text x="1105" y="260" text-anchor="middle" class="small">Receives sunlight and supports</text>
+  <text x="1105" y="288" text-anchor="middle" class="small">algae growth in a sealed section</text>
+  <path d="M955 248 L860 270" class="arrow"/>
+
+  <rect x="150" y="520" width="285" height="126" class="callout"/>
+  <text x="292" y="560" text-anchor="middle" class="label">Water Treatment Section</text>
+  <text x="292" y="592" text-anchor="middle" class="small">Lower body handles incoming water</text>
+  <text x="292" y="620" text-anchor="middle" class="small">through oxygen exchange surfaces</text>
+  <path d="M435 580 L555 520" class="arrow"/>
+
+  <rect x="985" y="488" width="250" height="146" class="callout"/>
+  <text x="1110" y="528" text-anchor="middle" class="label">AI Control Layer</text>
+  <text x="1110" y="560" text-anchor="middle" class="small">ESP32 reads sensors and sends</text>
+  <text x="1110" y="588" text-anchor="middle" class="small">data to the AI dashboard</text>
+  <text x="1110" y="616" text-anchor="middle" class="small">to adjust flow and aeration</text>
+  <path d="M985 560 L880 536" class="arrow"/>
+
+  <path d="M500 548 C430 590 390 620 330 650" class="arrow"/>
+  <text x="205" y="695" class="text">Inlet water enters the lower chamber</text>
+
+  <path d="M955 540 C1030 585 1085 620 1165 654" class="arrow"/>
+  <text x="1030" y="700" class="text">Cleaner water exits after treatment</text>
+
+  <text x="700" y="815" text-anchor="middle" class="text">Modules can be linked together as a floating treatment array for larger waterways.</text>
+</svg>
