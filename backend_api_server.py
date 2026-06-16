@@ -18,7 +18,7 @@ from pathlib import Path
 from time import time
 from typing import Any
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 
@@ -439,6 +439,11 @@ def capture_image() -> Any:
 @app.get("/image_data")
 def image_data() -> Any:
     return jsonify({"images": list(image_history)})
+
+
+@app.get("/water_images/<path:filename>")
+def water_image(filename: str) -> Any:
+    return send_from_directory(IMAGE_DIR, filename)
 
 
 if __name__ == "__main__":
