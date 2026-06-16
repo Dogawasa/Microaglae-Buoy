@@ -10,8 +10,8 @@
   - It does not automatically release microalgae into the river.
 
   AI decisions from the server:
-  - HIGH_FLOW / MEDIUM_FLOW / LOW_FLOW: run treatment flow.
-  - AERATE: use backup aeration when DO is low but sunlight is weak.
+  - TREAT: run water through the lower treatment chamber.
+  - FLUSH: run a short high-speed cleaning cycle for the intake path.
   - HOLD: save power and keep monitoring.
   - LOCKOUT: stop everything for safety.
 */
@@ -508,20 +508,22 @@ void applyDecision(const ServerDecision& d) {
     return;
   }
 
-  if (d.command == "HIGH_FLOW" || d.command == "MEDIUM_FLOW" || d.command == "LOW_FLOW") {
+  if (d.command == "TREAT" || d.command == "FLUSH") {
     startTreatmentFlow(d);
-  } else if (d.command == "AERATE") {
-    startAeration(d.aerateSeconds);
   } else if (d.command == "HOLD") {
     // Keep currently timed outputs running, but do not start a new cycle.
   }
 
-  if (d.growthMode == "SUN_GROW") {
+  if (d.aerateSeconds > 0) {
+    startAeration(d.aerateSeconds);
+  }
+
+  if (d.growthMode == "SEALED_GROW") {
     startMixerPulse();
     stopGrowLight();
-  } else if (d.growthMode == "LED_GROW") {
+  } else if (d.growthMode == "LOW_LIGHT_SUPPORT") {
     startGrowLight();
-  } else if (d.growthMode == "HARVEST") {
+  } else if (d.growthMode == "MAINTENANCE") {
     stopGrowLight();
     startMixerPulse();
   } else {
@@ -545,14 +547,12 @@ void startTreatmentFlow(const ServerDecision& d) {
   int pwm = d.pumpPwm;
 
   if (seconds <= 0) {
-    if (d.command == "HIGH_FLOW") seconds = 12;
-    else if (d.command == "MEDIUM_FLOW") seconds = 8;
-    else seconds = 4;
+    if (d.command == "FLUSH") seconds = 6;
+    else seconds = 10;
   }
   if (pwm <= 0) {
-    if (d.command == "HIGH_FLOW") pwm = 230;
-    else if (d.command == "MEDIUM_FLOW") pwm = 175;
-    else pwm = 120;
+    if (d.command == "FLUSH") pwm = 235;
+    else pwm = 185;
   }
 
   flowRunning = true;
