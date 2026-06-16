@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microalgae Buoy 3D</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8f8;
+      --panel: rgba(255, 255, 255, 0.94);
+      --panel-strong: #ffffff;
+      --ink: #152024;
+      --muted: #607176;
+      --line: rgba(20, 32, 36, 0.14);
+      --green: #24a758;
+      --cyan: #178eae;
+      --orange: #dc7a22;
+      --shadow: 0 18px 48px rgba(20, 32, 36, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(17, 36, 43, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 36, 43, 0.045) 1px, transparent 1px),
+        var(--bg);
+      background-size: 26px 26px, 26px 26px, auto;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-height: 640px;
+      isolation: isolate;
+    }
+
+    #scene {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      outline: none;
+    }
+
+    .topbar {
+      position: absolute;
+      top: 22px;
+      left: 24px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: calc(100vw - 420px);
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 24px rgba(20, 32, 36, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.92) 0 13%, transparent 14%),
+        linear-gradient(145deg, #dfe8e8, #b7c9cc);
+      border: 1px solid rgba(20, 32, 36, 0.2);
+      box-shadow: inset 0 -8px 18px rgba(20, 32, 36, 0.1);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.15;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .inspector {
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      z-index: 2;
+      width: min(360px, calc(100vw - 48px));
+      max-height: calc(100vh - 132px);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .inspector-head {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(247, 248, 248, 0.82);
+    }
+
+    .inspector-head h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .inspector-head p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .part-list {
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .part-button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 11px 10px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .part-button:hover,
+    .part-button.active {
+      border-color: rgba(34, 169, 214, 0.3);
+      background: rgba(222, 242, 247, 0.9);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      margin-top: 5px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 4px rgba(34, 169, 214, 0.12);
+    }
+
+    .part-title {
+      display: block;
+      font-size: 13px;
+      font-weight: 740;
+      line-height: 1.25;
+    }
+
+    .part-desc {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.42;
+    }
+
+    .readout {
+      margin: 0 10px 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-strong);
+    }
+
+    .readout strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .readout p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.48;
+    }
+
+    .toolbar {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      width: min(760px, calc(100vw - 48px));
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 52px rgba(10, 35, 33, 0.16);
+      backdrop-filter: blur(16px);
+      transform: translateX(-50%);
+    }
+
+    .tool-button {
+      min-width: 92px;
+      height: 38px;
+      padding: 0 13px;
+      border: 1px solid rgba(20, 32, 36, 0.16);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 720;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .tool-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(34, 169, 214, 0.44);
+    }
+
+    .tool-button.active {
+      border-color: rgba(23, 142, 174, 0.44);
+      background: #e3f5f8;
+      color: #0d596e;
+    }
+
+    .hint {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      z-index: 2;
+      max-width: 320px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      backdrop-filter: blur(12px);
+    }
+
+    .label {
+      position: absolute;
+      z-index: 3;
+      padding: 6px 8px;
+      border: 1px solid rgba(20, 32, 36, 0.22);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--ink);
+      box-shadow: 0 6px 16px rgba(20, 32, 36, 0.08);
+      font-size: 11px;
+      font-weight: 720;
+      line-height: 1;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .label.hidden {
+      display: none;
+    }
+
+    .title-block {
+      display: none;
+      position: absolute;
+      left: 24px;
+      top: 112px;
+      z-index: 2;
+      width: 330px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(8, 22, 35, 0.78);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .title-block table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .title-block th,
+    .title-block td {
+      padding: 8px 9px;
+      border: 1px solid rgba(116, 226, 255, 0.16);
+      text-align: left;
+    }
+
+    .title-block th {
+      width: 38%;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .hint {
+      display: none;
+    }
+
+    @media (max-width: 820px) {
+      .app {
+        min-height: 720px;
+      }
+
+      .topbar {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        max-width: none;
+      }
+
+      h1 {
+        font-size: 17px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .inspector {
+        top: auto;
+        left: 12px;
+        right: 12px;
+        bottom: 78px;
+        width: auto;
+        max-height: 230px;
+      }
+
+      .toolbar {
+        bottom: 12px;
+        width: calc(100vw - 24px);
+      }
+
+      .tool-button {
+        min-width: 76px;
+        height: 34px;
+        font-size: 12px;
+      }
+
+      .hint {
+        display: none;
+      }
+
+      .title-block {
+        display: none;
+      }
+
+      .label {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <canvas id="scene" aria-label="Interactive 3D model of a microalgae buoy"></canvas>
+
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div>
+        <h1>Liquid3-Inspired Water Buoy</h1>
+        <p class="subtitle">Floating photobioreactor + AI treatment module for polluted water</p>
+      </div>
+    </header>
+
+    <section class="title-block" aria-label="Engineering drawing title block">
+      <table>
+        <tr><th>Drawing</th><td>L3-WB01 Liquid3-Inspired Water Buoy</td></tr>
+        <tr><th>Scale</th><td>Concept scale / not for fabrication</td></tr>
+        <tr><th>View</th><td>Interactive assembly + exploded mode</td></tr>
+        <tr><th>Safety</th><td>Closed algae cartridge, no algae release</td></tr>
+      </table>
+    </section>
+
+    <aside class="inspector" aria-label="Components">
+      <div class="inspector-head">
+        <h2>Components</h2>
+        <p>คลิกชิ้นส่วนในโมเดลหรือเลือกจากรายการ เพื่อดูหน้าที่ของอุปกรณ์แต่ละส่วน</p>
+      </div>
+      <div class="part-list" id="partList"></div>
+      <div class="readout" id="readout">
+        <strong>Liquid3-Style Photobioreactor</strong>
+        <p>ถัง microalgae แบบปิดที่ย้ายแนวคิด Liquid3 มาอยู่บนทุ่นลอยน้ำ สาหร่ายรับแดดและผลิตออกซิเจน แต่ไม่ถูกปล่อยลงน้ำโดยตรง</p>
+      </div>
+    </aside>
+
+    <div class="toolbar" aria-label="3D controls">
+      <button class="tool-button" id="rotateBtn">Rotate</button>
+      <button class="tool-button" id="explodeBtn">Explode</button>
+      <button class="tool-button" id="oxygenBtn">Oxygen Flow</button>
+      <button class="tool-button" id="sensorBtn">Sensors</button>
+      <button class="tool-button" data-view="top">Top</button>
+      <button class="tool-button" data-view="side">Side</button>
+      <button class="tool-button" data-view="home">Home</button>
+    </div>
+
+    <p class="hint">ลากเพื่อหมุนโมเดล, scroll เพื่อซูม, คลิกชิ้นส่วนเพื่อ highlight ระบบที่เกี่ยวข้อง</p>
+  </main>
+
+  <script src="./vendor/three.min.js"></script>
+  <script>
+    class BlueprintOrbitControls {
+      constructor(camera, element) {
+        this.camera = camera;
+        this.element = element;
+        this.target = new THREE.Vector3(0, 0.5, 0);
+        this.enableDamping = true;
+        this.minZoom = 0.62;
+        this.maxZoom = 2.4;
+        this.radius = camera.position.distanceTo(this.target);
+        this.theta = Math.atan2(camera.position.x, camera.position.z);
+        this.phi = Math.acos((camera.position.y - this.target.y) / this.radius);
+        this.dragging = false;
+        this.last = { x: 0, y: 0 };
+        this.bind();
+        this.update();
+      }
+
+      bind() {
+        this.element.addEventListener("pointerdown", (event) => {
+          this.dragging = true;
+          this.last = { x: event.clientX, y: event.clientY };
+          this.element.setPointerCapture(event.pointerId);
+        });
+        this.element.addEventListener("pointermove", (event) => {
+          if (!this.dragging) return;
+          const dx = event.clientX - this.last.x;
+          const dy = event.clientY - this.last.y;
+          this.last = { x: event.clientX, y: event.clientY };
+          this.theta -= dx * 0.006;
+          this.phi = Math.max(0.28, Math.min(Math.PI - 0.28, this.phi + dy * 0.006));
+          this.update();
+        });
+        this.element.addEventListener("pointerup", (event) => {
+          this.dragging = false;
+          try { this.element.releasePointerCapture(event.pointerId); } catch (error) {}
+        });
+        this.element.addEventListener("wheel", (event) => {
+          event.preventDefault();
+          const factor = event.deltaY > 0 ? 0.92 : 1.08;
+          this.camera.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, this.camera.zoom * factor));
+          this.camera.updateProjectionMatrix();
+        }, { passive: false });
+      }
+
+      update() {
+        const sinPhi = Math.sin(this.phi);
+        this.camera.position.set(
+          this.target.x + this.radius * sinPhi * Math.sin(this.theta),
+          this.target.y + this.radius * Math.cos(this.phi),
+          this.target.z + this.radius * sinPhi * Math.cos(this.theta)
+        );
+        this.camera.lookAt(this.target);
+      }
+
+      syncFromCamera() {
+        const offset = this.camera.position.clone().sub(this.target);
+        this.radius = Math.max(0.1, offset.length());
+        this.theta = Math.atan2(offset.x, offset.z);
+        this.phi = Math.acos(THREE.MathUtils.clamp(offset.y / this.radius, -1, 1));
+      }
+    }
+
+    const canvas = document.querySelector("#scene");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf7f8f8);
+
+    const aspect = window.innerWidth / window.innerHeight;
+    const frustum = 7.2;
+    const camera = new THREE.OrthographicCamera(
+      (frustum * aspect) / -2,
+      (frustum * aspect) / 2,
+      frustum / 2,
+      frustum / -2,
+      0.1,
+      100
+    );
+    camera.position.set(7.5, 5.2, 8.4);
+
+    const controls = new BlueprintOrbitControls(camera, canvas);
+    controls.enableDamping = true;
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const pickables = [];
+    const partButtons = new Map();
+    const basePositions = new Map();
+    let selectedPart = "algae";
+    let rotateEnabled = true;
+    let exploded = false;
+    let oxygenVisible = true;
+    let sensorsVisible = true;
+
+    const materials = {
+      shell: new THREE.MeshStandardMaterial({ color: 0xf5f7f7, roughness: 0.54, metalness: 0.02, transparent: true, opacity: 0.72 }),
+      shellEdge: new THREE.MeshStandardMaterial({ color: 0x2d3d42, roughness: 0.54, metalness: 0.08, transparent: true, opacity: 0.5 }),
+      algae: new THREE.MeshPhysicalMaterial({
+        color: 0x2ead5d,
+        transmission: 0.18,
+        transparent: true,
+        opacity: 0.38,
+        roughness: 0.18,
+        thickness: 0.8,
+      }),
+      glass: new THREE.MeshPhysicalMaterial({
+        color: 0xdff8ff,
+        transparent: true,
+        opacity: 0.2,
+        transmission: 0.5,
+        roughness: 0.05,
+        thickness: 0.7,
+      }),
+      solar: new THREE.MeshStandardMaterial({ color: 0x26363b, roughness: 0.3, metalness: 0.16, transparent: true, opacity: 0.9 }),
+      solarLine: new THREE.MeshStandardMaterial({ color: 0x1e94b2, roughness: 0.25, metalness: 0.12 }),
+      electronics: new THREE.MeshStandardMaterial({ color: 0xe8ecec, roughness: 0.48, metalness: 0.05, transparent: true, opacity: 0.88 }),
+      orange: new THREE.MeshStandardMaterial({ color: 0xdc7a22, roughness: 0.5, metalness: 0.05 }),
+      sensor: new THREE.MeshStandardMaterial({ color: 0xb9c6c8, roughness: 0.28, metalness: 0.4 }),
+      filter: new THREE.MeshStandardMaterial({ color: 0xdde5e6, roughness: 0.58, metalness: 0.04, transparent: true, opacity: 0.62 }),
+      tube: new THREE.MeshStandardMaterial({ color: 0x178eae, roughness: 0.38, metalness: 0.05 }),
+      bubble: new THREE.MeshStandardMaterial({ color: 0xa8e9f4, transparent: true, opacity: 0.35, roughness: 0.06 }),
+      ballast: new THREE.MeshStandardMaterial({ color: 0xe1e8e8, roughness: 0.5, metalness: 0.04, transparent: true, opacity: 0.72 }),
+      line: new THREE.LineBasicMaterial({ color: 0x1b2b30, transparent: true, opacity: 0.65 }),
+      dim: new THREE.LineBasicMaterial({ color: 0x1b2b30, transparent: true, opacity: 0.82 }),
+      highlight: new THREE.MeshStandardMaterial({ color: 0xffc44d, roughness: 0.35, metalness: 0.1, emissive: 0x4d2600, emissiveIntensity: 0.1 }),
+    };
+
+    const parts = [
+      {
+        id: "algae",
+        title: "Liquid3-Style Photobioreactor",
+        color: "#35b45f",
+        description: "ถัง microalgae แบบปิดที่ได้รับแรงบันดาลใจจาก Liquid3 แต่ถูกออกแบบให้ลอยน้ำ สาหร่ายรับแดดและผลิตออกซิเจนโดยไม่ถูกปล่อยลงแหล่งน้ำ",
+      },
+      {
+        id: "solar",
+        title: "Solar Ring",
+        color: "#1d2b34",
+        description: "แผงโซลาร์เซลล์รอบทุ่นช่วยชาร์จแบตเตอรี่สำหรับ ESP32, เซนเซอร์, ปั๊มลม และระบบควบคุม",
+      },
+      {
+        id: "electronics",
+        title: "AI Control Core",
+        color: "#f28d2d",
+        description: "ระบบเดิมของโปรเจกต์: กล่องกันน้ำสำหรับ ESP32, แบตเตอรี่, relay/MOSFET และ backend logic ที่ตัดสินใจ TREAT, FLUSH, HOLD หรือ LOCKOUT",
+      },
+      {
+        id: "oxygen",
+        title: "Oxygen Flow",
+        color: "#22a9d6",
+        description: "ออกซิเจนจาก photobioreactor ถูกส่งผ่าน gas collector, ท่อ, check valve และ diffuser เพื่อกระจายเป็นฟองเล็กลงสู่น้ำ",
+      },
+      {
+        id: "sensors",
+        title: "Sensors",
+        color: "#8ca5a3",
+        description: "ชุดวัดค่า DO, pH, turbidity และ temperature อยู่ด้านล่าง เพื่อให้ backend ตัดสินใจ TREAT, FLUSH, HOLD หรือ LOCKOUT",
+      },
+      {
+        id: "filter",
+        title: "Lower Water Treatment Path",
+        color: "#455a5a",
+        description: "ส่วนเก่าของระบบยังอยู่ด้านล่าง: ช่องน้ำเข้า, ตะแกรงกรอง, ทางน้ำผ่าน และพื้นที่บำบัดก่อนปล่อยน้ำกลับออกไป",
+      },
+      {
+        id: "ballast",
+        title: "Ballast Stabilizer",
+        color: "#2d3f43",
+        description: "ครีบและน้ำหนักถ่วงช่วยให้ทุ่นทรงตัว ไม่พลิกง่ายเมื่ออยู่ในคลองหรือแหล่งน้ำจริง",
+      },
+    ];
+
+    const groups = {};
+    const root = new THREE.Group();
+    scene.add(root);
+
+    function addWireEdges(mesh, color = 0x7feaff, opacity = 0.58) {
+      if (!mesh.isMesh || mesh.userData.noEdges) return;
+      const edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(mesh.geometry, 18),
+        new THREE.LineBasicMaterial({ color, transparent: true, opacity })
+      );
+      edges.userData.isEdgeOverlay = true;
+      mesh.add(edges);
+    }
+
+    function addPartMesh(partId, mesh, offset = new THREE.Vector3()) {
+      if (!groups[partId]) {
+        groups[partId] = new THREE.Group();
+        groups[partId].userData.partId = partId;
+        root.add(groups[partId]);
+      }
+      mesh.userData.partId = partId;
+      mesh.userData.baseMaterial = mesh.material;
+      if (!mesh.userData.noEdges) {
+        addWireEdges(mesh, partId === "oxygen" ? 0x178eae : partId === "electronics" ? 0x5a6266 : 0x1f2f34);
+      }
+      groups[partId].add(mesh);
+      pickables.push(mesh);
+      if (!basePositions.has(groups[partId])) {
+        basePositions.set(groups[partId], groups[partId].position.clone());
+      }
+      groups[partId].userData.explodeOffset = offset;
+      return mesh;
+    }
+
+    function roundedCylinder(radius, height, mat, y) {
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, height, 96, 1, false), mat);
+      mesh.position.y = y;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    const water = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.45, 3.45, 0.15, 128),
+      new THREE.MeshPhysicalMaterial({ color: 0x1e8fa8, transparent: true, opacity: 0.08, roughness: 0.05, transmission: 0.15 })
+    );
+    water.position.y = -0.22;
+    water.visible = false;
+    root.add(water);
+
+    addPartMesh("ballast", roundedCylinder(2.65, 0.42, materials.shell, -0.05), new THREE.Vector3(0, -0.55, 0));
+    addPartMesh("ballast", roundedCylinder(2.82, 0.12, materials.shellEdge, 0.2), new THREE.Vector3(0, -0.55, 0));
+
+    const underside = new THREE.Mesh(new THREE.CylinderGeometry(1.72, 2.12, 1.18, 96), materials.filter);
+    underside.position.y = -0.82;
+    underside.castShadow = true;
+    underside.receiveShadow = true;
+    addPartMesh("filter", underside, new THREE.Vector3(0, -0.55, 0));
+
+    for (let i = 0; i < 4; i++) {
+      const angle = (i / 4) * Math.PI * 2;
+      const fin = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.72, 1.08), materials.ballast);
+      fin.position.set(Math.cos(angle) * 1.48, -1.78, Math.sin(angle) * 1.48);
+      fin.rotation.y = -angle;
+      fin.castShadow = true;
+      addPartMesh("ballast", fin, new THREE.Vector3(Math.cos(angle) * 0.4, -0.9, Math.sin(angle) * 0.4));
+    }
+
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(1.35, 96, 48, 0, Math.PI * 2, 0, Math.PI / 2), materials.glass);
+    dome.position.y = 0.72;
+    dome.scale.set(1.02, 0.7, 1.02);
+    dome.castShadow = true;
+    addPartMesh("algae", dome, new THREE.Vector3(0, 0.8, 0));
+
+    const reactorWall = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.96, 96, 1, true), materials.glass);
+    reactorWall.position.y = 0.58;
+    reactorWall.castShadow = true;
+    addPartMesh("algae", reactorWall, new THREE.Vector3(0, 0.8, 0));
+
+    const algae = new THREE.Mesh(new THREE.CylinderGeometry(0.94, 0.94, 0.62, 96), materials.algae);
+    algae.position.y = 0.38;
+    addPartMesh("algae", algae, new THREE.Vector3(0, 0.8, 0));
+
+    const reactorRimTop = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.018, 12, 96), materials.line);
+    reactorRimTop.position.y = 1.06;
+    reactorRimTop.rotation.x = Math.PI / 2;
+    addPartMesh("algae", reactorRimTop, new THREE.Vector3(0, 0.8, 0));
+
+    const reactorRimBottom = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.018, 12, 96), materials.line);
+    reactorRimBottom.position.y = 0.1;
+    reactorRimBottom.rotation.x = Math.PI / 2;
+    addPartMesh("algae", reactorRimBottom, new THREE.Vector3(0, 0.8, 0));
+
+    const gasCap = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.36, 0.16, 40), materials.electronics);
+    gasCap.position.y = 1.22;
+    addPartMesh("algae", gasCap, new THREE.Vector3(0, 0.8, 0));
+
+    const gasPort = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.52, 20), materials.tube);
+    gasPort.position.y = 1.46;
+    addPartMesh("algae", gasPort, new THREE.Vector3(0, 0.8, 0));
+
+    for (let i = 0; i < 22; i++) {
+      const bead = new THREE.Mesh(new THREE.SphereGeometry(0.035 + Math.random() * 0.025, 12, 8), materials.algae);
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 0.2 + Math.random() * 0.82;
+      bead.position.set(Math.cos(angle) * radius, 0.18 + Math.random() * 0.74, Math.sin(angle) * radius);
+      addPartMesh("algae", bead, new THREE.Vector3(0, 0.8, 0));
+    }
+
+    const hatch = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.62, 0.34, 48), materials.electronics);
+    hatch.position.y = -0.02;
+    hatch.castShadow = true;
+    addPartMesh("electronics", hatch, new THREE.Vector3(0, 0.35, 0));
+
+    const serviceTab = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.09, 0.16), materials.orange);
+    serviceTab.position.set(0, 0.57, 0.48);
+    addPartMesh("electronics", serviceTab, new THREE.Vector3(0, 0.35, 0));
+
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const panel = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.055, 0.42), materials.solar);
+      panel.position.set(Math.cos(angle) * 2.05, 0.42, Math.sin(angle) * 2.05);
+      panel.rotation.y = -angle;
+      panel.rotation.z = Math.sin(angle) * 0.02;
+      panel.castShadow = true;
+      addPartMesh("solar", panel, new THREE.Vector3(Math.cos(angle) * 0.45, 0.3, Math.sin(angle) * 0.45));
+
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.058, 0.025), materials.solarLine);
+      stripe.position.set(Math.cos(angle) * 2.05, 0.456, Math.sin(angle) * 2.05);
+      stripe.rotation.y = -angle;
+      addPartMesh("solar", stripe, new THREE.Vector3(Math.cos(angle) * 0.45, 0.3, Math.sin(angle) * 0.45));
+    }
+
+    const tubeCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.08, 1.45, 0),
+      new THREE.Vector3(0.72, 1.18, 0.12),
+      new THREE.Vector3(1.08, 0.38, 0.2),
+      new THREE.Vector3(1.05, -0.68, 0.22),
+      new THREE.Vector3(0.62, -1.42, 0.12),
+    ]);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(tubeCurve, 44, 0.04, 12, false), materials.tube);
+    addPartMesh("oxygen", tube, new THREE.Vector3(0.55, -0.2, 0.35));
+
+    const valve = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.22, 24), materials.orange);
+    valve.position.set(0.95, -0.3, 0.21);
+    valve.rotation.z = Math.PI / 2;
+    addPartMesh("oxygen", valve, new THREE.Vector3(0.55, -0.2, 0.35));
+
+    const diffuser = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.08, 48), materials.tube);
+    diffuser.position.set(0.38, -1.66, 0.1);
+    diffuser.rotation.x = Math.PI / 2;
+    addPartMesh("oxygen", diffuser, new THREE.Vector3(0.55, -0.2, 0.35));
+
+    const bubbles = new THREE.Group();
+    bubbles.userData.partId = "oxygen";
+    for (let i = 0; i < 36; i++) {
+      const bubble = new THREE.Mesh(new THREE.SphereGeometry(0.025 + Math.random() * 0.045, 16, 10), materials.bubble);
+      const a = Math.random() * Math.PI * 2;
+      const r = Math.random() * 0.48;
+      bubble.position.set(0.38 + Math.cos(a) * r, -1.5 + Math.random() * 1.5, 0.1 + Math.sin(a) * r);
+      bubble.userData.seed = Math.random() * 10;
+      bubbles.add(bubble);
+      pickables.push(bubble);
+    }
+    groups.oxygen.add(bubbles);
+
+    for (let i = 0; i < 4; i++) {
+      const angle = -0.95 + i * 0.28;
+      const probe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.92, 20), materials.sensor);
+      probe.position.set(Math.cos(angle) * 1.24, -1.25, Math.sin(angle) * 1.24);
+      probe.rotation.z = 0.08;
+      probe.castShadow = true;
+      addPartMesh("sensors", probe, new THREE.Vector3(-0.4, -0.45, 0));
+
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.075, 18, 12), materials.orange);
+      cap.position.set(Math.cos(angle) * 1.24, -1.74, Math.sin(angle) * 1.24);
+      addPartMesh("sensors", cap, new THREE.Vector3(-0.4, -0.45, 0));
+    }
+
+    const intake = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.48, 0.16), materials.filter);
+    intake.position.set(-1.74, -0.88, 0);
+    intake.rotation.z = -0.05;
+    addPartMesh("filter", intake, new THREE.Vector3(-0.45, -0.35, 0));
+
+    for (let i = 0; i < 5; i++) {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.42, 0.18), materials.sensor);
+      bar.position.set(-2.08 + i * 0.16, -0.88, 0.01);
+      addPartMesh("filter", bar, new THREE.Vector3(-0.45, -0.35, 0));
+    }
+
+    const sunlight = new THREE.DirectionalLight(0xffffff, 2.45);
+    sunlight.position.set(-4, 8, 5);
+    sunlight.castShadow = true;
+    sunlight.shadow.mapSize.set(2048, 2048);
+    scene.add(sunlight);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xd8e0e0, 1.4));
+
+    const floor = new THREE.GridHelper(18, 36, 0xc7d0d2, 0xe3e8e9);
+    floor.position.y = -2.28;
+    floor.material.transparent = true;
+    floor.material.opacity = 0.7;
+    scene.add(floor);
+
+    function addDrawingLine(points, material = materials.dim) {
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, material);
+      scene.add(line);
+      return line;
+    }
+
+    addDrawingLine([new THREE.Vector3(-2.82, 0.66, 2.35), new THREE.Vector3(2.82, 0.66, 2.35)]);
+    addDrawingLine([new THREE.Vector3(-2.82, 0.48, 2.2), new THREE.Vector3(-2.82, 0.84, 2.5)]);
+    addDrawingLine([new THREE.Vector3(2.82, 0.48, 2.2), new THREE.Vector3(2.82, 0.84, 2.5)]);
+    addDrawingLine([new THREE.Vector3(-1.55, -1.92, -2.35), new THREE.Vector3(-1.55, 1.58, -2.35)]);
+    addDrawingLine([new THREE.Vector3(-1.72, -1.92, -2.2), new THREE.Vector3(-1.38, -1.92, -2.5)]);
+    addDrawingLine([new THREE.Vector3(-1.72, 1.58, -2.2), new THREE.Vector3(-1.38, 1.58, -2.5)]);
+    addDrawingLine([new THREE.Vector3(0.35, -1.68, 0.1), new THREE.Vector3(2.35, -1.68, 0.1)]);
+    addDrawingLine([new THREE.Vector3(2.35, -1.92, -0.12), new THREE.Vector3(2.35, -1.44, 0.32)]);
+
+    const labels = [
+      { id: "algae", text: "Liquid3-style sealed algae reactor", point: new THREE.Vector3(0, 1.72, 0) },
+      { id: "oxygen", text: "Oxygen diffuser to water", point: new THREE.Vector3(0.38, -1.45, 0.1) },
+      { id: "sensors", text: "Sensors", point: new THREE.Vector3(1.22, -1.25, -0.6) },
+      { id: "filter", text: "AI water treatment path", point: new THREE.Vector3(-1.78, -0.75, 0) },
+      { id: "dimension", text: "Ø buoy ring / float diameter", point: new THREE.Vector3(0, 0.82, 2.45) },
+      { id: "dimension", text: "assembly height", point: new THREE.Vector3(-1.72, -0.15, -2.45) },
+      { id: "dimension", text: "no algae release: gas only", point: new THREE.Vector3(2.38, -1.62, 0.2) },
+    ].map((item) => {
+      const el = document.createElement("div");
+      el.className = "label";
+      el.textContent = item.text;
+      document.body.appendChild(el);
+      return { ...item, el };
+    });
+
+    const selectionRing = new THREE.Mesh(
+      new THREE.TorusGeometry(1.28, 0.018, 12, 96),
+      new THREE.MeshBasicMaterial({ color: 0xffb340, transparent: true, opacity: 0.92 })
+    );
+    selectionRing.rotation.x = Math.PI / 2;
+    selectionRing.position.y = 0.68;
+    scene.add(selectionRing);
+
+    const ringTargets = {
+      algae: { position: new THREE.Vector3(0, 0.82, 0), scale: 1.0 },
+      solar: { position: new THREE.Vector3(0, 0.48, 0), scale: 1.68 },
+      electronics: { position: new THREE.Vector3(0, 0.62, 0), scale: 0.48 },
+      oxygen: { position: new THREE.Vector3(0.58, -0.92, 0.16), scale: 0.42 },
+      sensors: { position: new THREE.Vector3(1.06, -1.28, -0.45), scale: 0.38 },
+      filter: { position: new THREE.Vector3(-1.74, -0.82, 0), scale: 0.36 },
+      ballast: { position: new THREE.Vector3(0, -1.68, 0), scale: 1.22 },
+    };
+
+    function buildPartList() {
+      const list = document.querySelector("#partList");
+      for (const part of parts) {
+        const button = document.createElement("button");
+        button.className = "part-button";
+        button.innerHTML = `
+          <span class="dot" style="background:${part.color}; box-shadow:0 0 0 4px ${part.color}22"></span>
+          <span>
+            <span class="part-title">${part.title}</span>
+            <span class="part-desc">${part.description}</span>
+          </span>
+        `;
+        button.addEventListener("click", () => selectPart(part.id));
+        list.appendChild(button);
+        partButtons.set(part.id, button);
+      }
+    }
+
+    function selectPart(id) {
+      selectedPart = id;
+      const part = parts.find((item) => item.id === id);
+      document.querySelector("#readout").innerHTML = `<strong>${part.title}</strong><p>${part.description}</p>`;
+      partButtons.forEach((button, partId) => button.classList.toggle("active", partId === id));
+      const target = ringTargets[id] || ringTargets.algae;
+      selectionRing.position.copy(target.position);
+      selectionRing.scale.setScalar(target.scale);
+    }
+
+    function setExplode(active) {
+      exploded = active;
+      document.querySelector("#explodeBtn").classList.toggle("active", exploded);
+      for (const group of Object.values(groups)) {
+        const base = basePositions.get(group) || new THREE.Vector3();
+        const offset = group.userData.explodeOffset || new THREE.Vector3();
+        group.userData.target = exploded ? base.clone().add(offset) : base.clone();
+      }
+    }
+
+    function setOxygen(active) {
+      oxygenVisible = active;
+      document.querySelector("#oxygenBtn").classList.toggle("active", oxygenVisible);
+      groups.oxygen.visible = oxygenVisible;
+      if (oxygenVisible) selectPart("oxygen");
+    }
+
+    function setSensors(active) {
+      sensorsVisible = active;
+      document.querySelector("#sensorBtn").classList.toggle("active", sensorsVisible);
+      groups.sensors.visible = sensorsVisible;
+      if (sensorsVisible) selectPart("sensors");
+    }
+
+    function setView(view) {
+      const positions = {
+        home: new THREE.Vector3(7.5, 5.2, 8.4),
+        top: new THREE.Vector3(0.1, 10.2, 0.1),
+        side: new THREE.Vector3(9.8, 1.8, 0.2),
+      };
+      camera.position.copy(positions[view]);
+      controls.target.set(0, 0.2, 0);
+      controls.syncFromCamera();
+      controls.update();
+    }
+
+    function screenPosition(point) {
+      const projected = point.clone().project(camera);
+      return {
+        x: (projected.x * 0.5 + 0.5) * window.innerWidth,
+        y: (-projected.y * 0.5 + 0.5) * window.innerHeight,
+        visible: projected.z < 1,
+      };
+    }
+
+    function updateLabels() {
+      for (const label of labels) {
+        const pos = screenPosition(label.point);
+        label.el.style.left = `${pos.x}px`;
+        label.el.style.top = `${pos.y}px`;
+        const shouldShow = label.id === "dimension" || selectedPart === label.id || selectedPart === "oxygen";
+        label.el.classList.toggle("hidden", !pos.visible || !shouldShow);
+      }
+    }
+
+    function onPointerDown(event) {
+      pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(pickables, true);
+      if (hits.length) {
+        const id = hits[0].object.userData.partId || hits[0].object.parent?.userData.partId;
+        if (id) selectPart(id);
+      }
+    }
+
+    function onResize() {
+      const aspect = window.innerWidth / window.innerHeight;
+      camera.left = (frustum * aspect) / -2;
+      camera.right = (frustum * aspect) / 2;
+      camera.top = frustum / 2;
+      camera.bottom = frustum / -2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    document.querySelector("#rotateBtn").addEventListener("click", () => {
+      rotateEnabled = !rotateEnabled;
+      document.querySelector("#rotateBtn").classList.toggle("active", rotateEnabled);
+    });
+    document.querySelector("#explodeBtn").addEventListener("click", () => setExplode(!exploded));
+    document.querySelector("#oxygenBtn").addEventListener("click", () => setOxygen(!oxygenVisible));
+    document.querySelector("#sensorBtn").addEventListener("click", () => setSensors(!sensorsVisible));
+    document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+    canvas.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("resize", onResize);
+
+    buildPartList();
+    selectPart("algae");
+    document.querySelector("#rotateBtn").classList.add("active");
+    document.querySelector("#oxygenBtn").classList.add("active");
+    document.querySelector("#sensorBtn").classList.add("active");
+
+    const clock = new THREE.Clock();
+    function animate() {
+      const elapsed = clock.getElapsedTime();
+      if (rotateEnabled) root.rotation.y += 0.0025;
+
+      for (const group of Object.values(groups)) {
+        if (group.userData.target) {
+          group.position.lerp(group.userData.target, 0.08);
+        }
+      }
+
+      bubbles.children.forEach((bubble) => {
+        const seed = bubble.userData.seed;
+        bubble.position.y += 0.0045 + (seed % 3) * 0.0007;
+        bubble.position.x += Math.sin(elapsed * 2 + seed) * 0.0009;
+        if (bubble.position.y > 0.08) bubble.position.y = -1.5;
+      });
+
+      water.position.y = -0.22 + Math.sin(elapsed * 1.6) * 0.018;
+      controls.update();
+      updateLabels();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
