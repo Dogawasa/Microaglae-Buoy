@@ -1,0 +1,268 @@
+MICROALGAE BUOY PROJECT - START HERE
+====================================
+
+This file explains how to start the project from the beginning
+and how to use both the backend server and the GitHub Pages frontend.
+
+
+1) FILES YOU WILL USE
+---------------------
+
+Important files:
+
+- backend_api_server.py
+  Use this when you want the GitHub Pages website to connect to your backend.
+
+- modular_ai_server.py
+  Use this if you want the older all-in-one local dashboard on localhost.
+
+- microsketch_\microsketch_.ino
+  Upload this to your ESP32 in Arduino IDE.
+
+- README.md
+  Main project overview.
+
+- docs\liquid3-water-buoy-3d.html
+  Interactive 3D engineering drawing of the new Liquid3-inspired water buoy.
+
+- BACKEND_DEPLOYMENT.md
+  Extra notes for hosting the backend separately.
+
+
+2) BEFORE YOU START
+-------------------
+
+Make sure you have:
+
+- Python installed
+- Arduino IDE installed
+- ESP32 board package installed in Arduino IDE
+- WiFi available
+- Your computer and ESP32 on the same network
+
+
+3) HOW TO START THE BACKEND SERVER
+----------------------------------
+
+Step 1: Open PowerShell or CMD
+
+Step 2: Go to the project folder
+
+Example:
+
+cd D:\AlgaeBioreactor
+
+Step 3: Install required Python packages
+
+pip install -r requirements.txt
+
+Step 4: Start the backend server
+
+python backend_api_server.py
+
+If the server starts correctly, it will run at:
+
+http://localhost:5000
+
+
+4) HOW TO TEST THE BACKEND QUICKLY
+----------------------------------
+
+Open this in your browser:
+
+http://localhost:5000/health
+
+If working correctly, you should see a small JSON response.
+
+
+5) HOW TO USE THE GITHUB PAGES FRONTEND
+---------------------------------------
+
+After GitHub Pages is enabled in your repository settings, open:
+
+https://dogawasa.github.io/Microaglae-Buoy/
+
+When the page opens:
+
+1. Find the Backend URL box
+2. Enter your backend URL
+3. Click Save
+
+Examples:
+
+- http://192.168.1.103:5000
+- https://your-backend-service.example.com
+
+The page will then load live data from your backend.
+
+
+6) HOW TO FIND YOUR COMPUTER IP
+-------------------------------
+
+Open PowerShell or CMD and run:
+
+ipconfig
+
+Look for:
+
+IPv4 Address
+
+Example:
+
+192.168.1.103
+
+Then your backend URL will be:
+
+http://192.168.1.103:5000
+
+
+7) HOW TO SET UP THE ESP32
+--------------------------
+
+Open this file in Arduino IDE:
+
+microsketch_\microsketch_.ino
+
+Edit these lines:
+
+const char* WIFI_SSID = "YourWiFiName";
+const char* WIFI_PASSWORD = "YourWiFiPassword";
+const char* SERVER_URL = "http://YOUR_COMPUTER_IP:5000/analyze";
+
+Example:
+
+const char* SERVER_URL = "http://192.168.1.103:5000/analyze";
+
+Then:
+
+1. Select your ESP32 board
+2. Select the correct COM port
+3. Click Upload
+4. Open Serial Monitor if needed
+
+
+8) HOW THE SYSTEM WORKS
+-----------------------
+
+Normal workflow:
+
+1. The sealed Liquid3-style microalgae photobioreactor receives sunlight
+2. Microalgae produces oxygen inside the closed chamber
+3. Oxygen is routed through tubing, check valve, and diffuser into the water
+4. Water moves through the lower treatment path
+5. ESP32 reads sensor values
+6. ESP32 sends data to /analyze
+7. Backend decides what to do
+8. GitHub Pages dashboard reads /data
+9. Dashboard shows module status, commands, and alerts
+
+Important:
+
+The algae is not released directly into natural water.
+The system transfers gas/oxygen support while keeping the algae contained.
+
+
+9) DASHBOARD BUTTONS
+--------------------
+
+These are for demo/testing:
+
+- Good
+  Simulates good water
+
+- Treat
+  Simulates low oxygen and treatment action
+
+- Dark
+  Simulates low light condition
+
+- Clog
+  Simulates clogging / high turbidity
+
+- pH
+  Simulates unsafe pH
+
+- Service
+  Simulates maintenance / algae cartridge alert
+
+- Toggle Lock
+  Manually locks or unlocks the system
+
+
+10) MAIN API ROUTES
+-------------------
+
+Used by the frontend and ESP32:
+
+- GET /health
+- GET /data
+- POST /analyze
+- POST /simulate
+- POST /manual_lock
+
+Optional image features:
+
+- POST /capture-image
+- GET /image_data
+
+
+11) IF THE WEBSITE DOES NOT CONNECT
+-----------------------------------
+
+Check these:
+
+- Is backend_api_server.py running?
+- Is the backend URL correct?
+- Is port 5000 blocked by firewall?
+- Are the computer and ESP32 on the same network?
+- Did the computer IP change after restart?
+
+
+12) IF THE ESP32 DOES NOT CONNECT
+---------------------------------
+
+Check these:
+
+- WiFi name and password are correct
+- SERVER_URL is correct
+- Backend server is running
+- Computer IP has not changed
+
+
+13) SIMPLE STARTUP ORDER
+------------------------
+
+Best order:
+
+1. Open CMD or PowerShell
+2. cd D:\AlgaeBioreactor
+3. Run python backend_api_server.py
+4. Open GitHub Pages website
+5. Enter backend URL and click Save
+6. Power the ESP32
+7. Watch the dashboard update
+
+
+14) FOR LOCAL DEMO ONLY
+-----------------------
+
+If you do not want to use GitHub Pages and only want a local dashboard:
+
+python modular_ai_server.py
+
+Then open:
+
+http://localhost:5000
+
+
+15) FINAL NOTE
+--------------
+
+GitHub Pages only hosts the frontend website.
+It does not run Python.
+
+The backend must stay separate and running on:
+
+- your own computer
+- a local server
+- or a cloud hosting service
