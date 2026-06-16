@@ -1,15 +1,17 @@
-# Modular Algae Buoy Array
+# Liquid3-Inspired Microalgae Water Buoy
 
-A high-school project for a modular floating water-treatment buoy that uses a closed microalgae chamber, ESP32 sensors, and an AI dashboard to decide how strongly the system should treat incoming water.
+A high-school project for a floating water-treatment buoy inspired by Serbia's Liquid3 photobioreactor concept. Instead of cleaning city air on land, this design adapts the idea into a water-based buoy for polluted canals and rivers in Thailand. It combines a closed microalgae photobioreactor, ESP32 sensors, oxygen diffusion, and an AI dashboard that decides how strongly the system should treat incoming water.
 
 ## Project idea
 
-This system is designed as a chain of floating treatment modules. Water flows through each buoy, passes a controlled treatment section, and returns to the river or canal with improved dissolved oxygen and reduced nutrient stress.
+This system is designed as a chain of floating treatment modules. The new concept keeps the original AI sensor buoy idea, but gives it a clearer identity: **Liquid3 in water**.
+
+Microalgae stays inside a sealed transparent photobioreactor on top of the buoy, where it receives sunlight and produces oxygen. The oxygen is routed through a gas collector, tubing, check valve, and diffuser so it can support dissolved oxygen in the surrounding water. Polluted water flows through a separate lower treatment path with filters, sensors, and AI-controlled flow.
 
 The design is split into two controlled sections:
 
-1. Upper algae production chamber  
-   A closed transparent chamber where microalgae or algae biofilm receives sunlight and supports oxygen production.
+1. Upper Liquid3-style microalgae photobioreactor  
+   A closed transparent chamber where microalgae receives sunlight, produces oxygen, and remains contained.
 
 2. Lower treatment chamber  
    The section where water passes through the buoy, interacts with the treatment surface, and is managed by pumps, aeration, and AI decisions.
@@ -27,6 +29,7 @@ The project does **not** automatically release live microalgae into natural wate
   - normal report every 60 seconds
   - immediate report for important changes or risky conditions
 - Water image capture/upload and simple image analysis
+- Interactive 3D engineering drawing for the new Liquid3-inspired buoy concept
 
 ## Project files
 
@@ -37,6 +40,8 @@ The project does **not** automatically release live microalgae into natural wate
 - `docs/index.html` - GitHub Pages frontend dashboard
 - `docs/app.js` - frontend logic for remote backend polling
 - `docs/styles.css` - GitHub Pages styling
+- `docs/liquid3-water-buoy-3d.html` - interactive 3D engineering drawing of the new concept
+- `docs/vendor/three.min.js` - local Three.js runtime for the 3D model
 - `BACKEND_DEPLOYMENT.md` - how to host the Flask backend separately
 - `MICROALGAE_PROJECT_UPGRADE_PLAN.md` - concept and presentation notes
 - `PRODUCT_ARCHITECTURE.md` - module architecture and control flow
@@ -54,6 +59,25 @@ The project does **not** automatically release live microalgae into natural wate
 ### 3D model
 
 ![3D model](assets/model_3d_isometric.svg)
+
+## Interactive 3D model
+
+Open this file to view the updated Liquid3-inspired engineering model:
+
+```text
+docs/liquid3-water-buoy-3d.html
+```
+
+The model shows:
+
+- Liquid3-style sealed microalgae photobioreactor
+- Solar ring
+- AI control core with ESP32/electronics
+- Lower water treatment path
+- Oxygen tube, check valve, and diffuser
+- Sensor probes
+- Ballast stabilizer
+- Exploded view, top view, side view, and part inspector
 
 ## Run the dashboard
 
@@ -192,9 +216,12 @@ The dashboard and AI server can choose actions such as:
 - light sensor
 - water temperature sensor
 - small water pump
+- small air pump or oxygen transfer pump
+- check valve for gas tubing
+- fine bubble diffuser / air stone
 - relay or MOSFET driver
 - aerator
-- clear algae chamber
+- clear sealed microalgae photobioreactor chamber
 - floating body / buoy structure
 
 ## Notes
